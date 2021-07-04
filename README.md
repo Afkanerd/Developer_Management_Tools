@@ -2,4 +2,3 @@
 - Authenticate developers accounts
 -- Credentials
 -- Scopes
---- Access levels

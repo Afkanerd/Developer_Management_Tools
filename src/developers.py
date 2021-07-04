@@ -12,7 +12,6 @@ class Developer(Datastore):
         Datastore.__init__()
         return None
 
-    # CRUD
     def create(self, scopes=[]):
         if self.ID is None and self.AUTH_ID is None:
             raise Exception('ID and AUTH_ID cannot be Empty')
@@ -36,8 +35,13 @@ class Developer(Datastore):
 
 if __name__ == "__main__":
     dev = Developer()
+
     '''
+    + dev creates scopes
+    + scopes are defined with read or write or both
+
     - database
+    # Abstractions
     users:
         users.read
         users.write
