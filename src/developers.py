@@ -40,3 +40,14 @@ class Developers(Datastore):
             return Developer(email=dev['email'], auth_id=dev['auth_id'], auth_key=dev['auth_key'], scopes=dev['scopes'])
         except Exception as error:
             raise Exception(error)
+
+    @classmethod
+    def authenticate(cls, auth_id, auth_key, scopes):
+        try:
+            dev = cls.__has_details__(auth_key=auth_key, auth_id=auth_id, scopes=scopes)
+            if len(dev) > 0:
+                return True
+            else:
+                return False
+        except Exception as error:
+            raise Exception(error)

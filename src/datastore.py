@@ -18,14 +18,17 @@ class Datastore():
         try:
             cls.mysqlcursor.execute( statement, [email, scopes, auth_id, auth_key])
             cls.mysql.commit( )
-        except pymysql.connector.errors.IntegrityError as error:
-            print(error.msg)
+        except pymysql.err.IntegrityError as error:
+            '''
+            # print(error.msg)
             # print(error._full_msg)
             if error.errno == 1062:
                 print('dev already exist')
                 # raise Exception(error._full_msg)
             else:
                 raise Exception(error)
+            '''
+            print(error)
         except Exception as error:
             raise Exception(error)
 
@@ -34,6 +37,23 @@ class Datastore():
         statement = f'SELECT * FROM {cls.database} WHERE email=%s'
         try:
             cls.mysqlcursor.execute( statement, [email])
+            return cls.mysqlcursor.fetchall()
+
+            '''
+            except mysql.connector.errors.IntegrityError as error:
+                print(error.msg)
+                print(error.__dict__)
+                raise Exception(error)
+            '''
+        except Exception as error:
+            print(error.__dict__)
+            raise Exception(error)
+
+    @classmethod
+    def __has_details__(cls, auth_id, auth_key, scopes):
+        statement = f'SELECT * FROM {cls.database} WHERE auth_id=%s AND auth_key=%s AND scopes=%s'
+        try:
+            cls.mysqlcursor.execute( statement, [auth_id, auth_key, scopes])
             return cls.mysqlcursor.fetchall()
 
             '''
