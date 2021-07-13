@@ -29,8 +29,8 @@ if __name__ == "__main__":
     password='asshole'
     database='developers'
 
-    Developers().init_db(host=host, user=user, database=database, password=password)
     import argparse
+    import traceback
 
     parser = argparse.ArgumentParser(description="cli args")
     parser.add_argument("--scopes", help="Read (can fetch only), Write (can write and update)", default='read', const='read', choices=['read', 'write', '+rw'], nargs='?')
@@ -46,11 +46,15 @@ if __name__ == "__main__":
     if args.create:
         print(f'>> creating dev with scope [{args.create}, {args.scopes}]')
         try:
-            Developers.create(email=args.create, scopes=args.scopes)
+            Developers().init_db(host=host, user=user, database=database, password=password)
+            if Developers.create(email=args.create, scopes=args.scopes):
+                print('developer created')
+
         except Exception as error:
-            print(error)
-        else:
-            print(f'developer created')
+            # print(error)
+            print(traceback.format_exc())
+    else:
+        parser.print_help()
 
     '''
     elif args.fetch:
