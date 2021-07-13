@@ -2,6 +2,14 @@
 
 from datastore import Datastore
 
+
+class Developer():
+    def __init__(self, email, auth_id, auth_key, scopes):
+        self.email = email
+        self.auth_id = auth_id
+        self.auth_key = auth_key
+        self.scopes = scopes
+
 class Developers(Datastore):
 
     @classmethod
@@ -21,3 +29,14 @@ class Developers(Datastore):
         except Exception as error:
             raise Exception(error)
 
+
+    @classmethod
+    def fetch(cls, email):
+        try:
+            dev = cls.__fetch__(email=email)
+            if len(dev) < 1:
+                return None
+            dev = dev[0]
+            return Developer(email=dev['email'], auth_id=dev['auth_id'], auth_key=dev['auth_key'], scopes=dev['scopes'])
+        except Exception as error:
+            raise Exception(error)

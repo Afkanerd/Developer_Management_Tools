@@ -21,13 +21,9 @@ $ 0,1= main delete -developer <ID> <AUTH_ID>
 $ SCOPES= main fetch -developer <ID> <AUTH_ID>
 '''
 
-from developers import Developers
+from developers import Developers, Developer
 
 if __name__ == "__main__":
-    host='localhost'
-    user='root'
-    password='asshole'
-    database='developers'
 
     import argparse
     import traceback
@@ -43,16 +39,31 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args)
 
+    host='localhost'
+    user='root'
+    password='asshole'
+    database='developers'
+    Developers().init_db(host=host, user=user, database=database, password=password)
     if args.create:
         print(f'>> creating dev with scope [{args.create}, {args.scopes}]')
         try:
-            Developers().init_db(host=host, user=user, database=database, password=password)
             if Developers.create(email=args.create, scopes=args.scopes):
                 print('developer created')
 
         except Exception as error:
             # print(error)
             print(traceback.format_exc())
+    elif args.fetch:
+        print(f'>> fetching dev with email [{args.fetch}]')
+        try:
+            dev = Developers.fetch(email=args.fetch)
+            # print(dev)
+        except Exception as error:
+            print(traceback.format_exc())
+        else:
+            if dev is not None:
+                print(f'\nemail: {dev.email}\nauth_id: {dev.auth_id}\nauth_key: {dev.auth_key}')
+        
     else:
         parser.print_help()
 

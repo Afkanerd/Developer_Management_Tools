@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import mysql.connector
+import pymysql
 
 class Datastore():
     database=None
@@ -18,7 +18,7 @@ class Datastore():
         try:
             cls.mysqlcursor.execute( statement, [email, scopes, auth_id, auth_key])
             cls.mysql.commit( )
-        except mysql.connector.errors.IntegrityError as error:
+        except pymysql.connector.errors.IntegrityError as error:
             print(error.msg)
             # print(error._full_msg)
             if error.errno == 1062:
@@ -30,9 +30,26 @@ class Datastore():
             raise Exception(error)
 
     @classmethod
+    def __fetch__(cls, email):
+        statement = f'SELECT * FROM {cls.database} WHERE email=%s'
+        try:
+            cls.mysqlcursor.execute( statement, [email])
+            return cls.mysqlcursor.fetchall()
+
+            '''
+            except mysql.connector.errors.IntegrityError as error:
+                print(error.msg)
+                print(error.__dict__)
+                raise Exception(error)
+            '''
+        except Exception as error:
+            print(error.__dict__)
+            raise Exception(error)
+
+    @classmethod
     def init_db(cls, host, user, database, password):
         print(f'host={host}, user={user}, database={database}, password={password}')
-        cls.mysql = mysql.connector.connect( host= host, user= user, password= password, database=database, auth_plugin='mysql_native_password')
+        cls.mysql = pymysql.connect( host= host, user= user, password= password, database=database, cursorclass=pymysql.cursors.SSDictCursor)
         # cls.mysql = mysql.connector.connect( host= host, user= user, password= password, database=database)
         cls.mysqlcursor = cls.mysql.cursor()
         cls.database = database
