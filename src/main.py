@@ -21,7 +21,15 @@ $ 0,1= main delete -developer <ID> <AUTH_ID>
 $ SCOPES= main fetch -developer <ID> <AUTH_ID>
 '''
 
+from developers import Developers
+
 if __name__ == "__main__":
+    host='localhost'
+    user='root'
+    password='asshole'
+    database='developers'
+
+    Developers().init_db(host=host, user=user, database=database, password=password)
     import argparse
 
     parser = argparse.ArgumentParser(description="cli args")
@@ -36,10 +44,20 @@ if __name__ == "__main__":
     print(args)
 
     if args.create:
-        print(f'creating dev with scope [{args.scopes}]')
+        print(f'>> creating dev with scope [{args.create}, {args.scopes}]')
+        try:
+            Developers.create(email=args.create, scopes=args.scopes)
+        except Exception as error:
+            print(error)
+        else:
+            print(f'developer created')
+
+    '''
     elif args.fetch:
-        print(f'fetching dev')
+        print(f'>> fetching dev with email [{args.create}]')
+
     elif args.update:
-        print(f'updating dev')
+        print(f'>> updating dev with scope [{args.scopes}]')
     elif args.delete:
-        print(f'deleting dev')
+        print(f'>> deleting dev [{args.delete}]')
+    '''
